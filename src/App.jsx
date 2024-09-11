@@ -7,6 +7,7 @@ import AddressDetails from './components/AddressDetails';
 import PaymentDetails from './components/PaymentDetails';
 import { z } from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
+import FinalData from './FinalData';
 const schema1=z.object({
   firstname:z.string().min(1,{message:'first name is required'}),
   lastname:z.string().min(1,{message:'last name is required'}),
@@ -27,7 +28,7 @@ const schema3=z.object({
 })
 const schema4=z.object({
   cardno:z.coerce.number().min(1,{message:'card no is required to be of length 16'}),
-  cardholder:z.string().min(1,{message:'chardholder name is required'}),
+  holdername:z.string().min(1,{message:'chardholder name is required'}),
   expiry:z.coerce.number().min(1,{message:'expiry is required '}),
   cvv:z.coerce.number().min(1,{message:'cvv is required'}).max(3,{message:'cvv cannot be greater than 3'}),
 
@@ -60,7 +61,6 @@ function App() {
         return <div></div>
     }
   }
-  console.log(formData);
   const next=async()=>{
     const valid=await trigger();
     console.log(errors);
@@ -71,9 +71,14 @@ function App() {
         ...getValues()
       })
     }
-    else{
-      console.log(errors);
-    }
+  }
+  if(step==4){
+
+      return (
+        <div className='h-full w-full flex justify-center items-center'>
+          <FinalData data={formData}/> 
+      </div>
+      )
   }
   return (
     <div className='w-full h-full flex flex-col justify-center items-center '>
@@ -86,7 +91,7 @@ function App() {
             ?
           <button className={`${step==3?'bg-gray-300 text-gray-500 hover:cursor-not-allowed':'bg-blue-500 hover:cursor-pointer'} px-3 py-2 rounded m-3`}  onClick={()=>{next()}} disabled={step==3?true:false}>Next</button>
             :
-          <button className={`bg-green-500 px-3 py-2 rounded m-3`} >Submit</button>
+          <button onClick={()=>{next()}} className={`bg-green-500 px-3 py-2 rounded m-3`} >Submit</button>
         }
         </div>
       </div>
